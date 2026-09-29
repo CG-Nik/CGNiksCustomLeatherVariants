@@ -203,7 +203,7 @@ namespace CGNiksCustomLeatherVariants
                 new Vector4(0.6f, 0.36f, 0.24f, 1f),
                 true,
                 0.5f,
-                0.5f,
+                0f,
                 new AttributeCurveRange[]
                 {
                     new AttributeCurveRange(
@@ -228,7 +228,7 @@ namespace CGNiksCustomLeatherVariants
                 new Vector4(0.6f, 0.19f, 0.14f, 1f),
                 true,
                 0.5f,
-                0.5f,
+                0f,
                 new AttributeCurveRange[]
                 {
                     new AttributeCurveRange(
