@@ -1,10 +1,14 @@
-﻿using MateriaLib;
-using MelonLoader;
-using UnityEngine;
-using Alta;
-using System.Reflection;
+﻿using Alta;
 using Alta.Caves;
+using Alta.Inventory;
+using Alta.Networking;
+using DifferentWyrmMaterials;
+using MateriaLib;
+using MelonLoader;
 using System.Collections;
+using System.Reflection;
+using UnityEngine;
+using static AltaMenuItemBase.Assets.Create.Township.Features;
 
 [assembly: MelonInfo(typeof(CGNiksCustomLeatherVariants.Core), "CGNiksCustomLeatherVariants", "1.0.0", "CGNik", null)]
 [assembly: MelonGame("Alta", "A Township Tale")]
@@ -19,7 +23,7 @@ namespace CGNiksCustomLeatherVariants
             MateriaLib.Main.SetupMaterial += SetupMaterial;
         }
 
-        private static void AddLeather(string name, int hash, MaterialConfig materialConfig, Vector4 color0, Vector4 color1, Vector4 color2, bool addToDistribution, float baseValue = 1f, float noAttributeValue = 1f, AttributeCurveRange[] multipliers = null)
+        private static LibMaterial AddLeather(string name, int hash, MaterialConfig materialConfig, Vector4 color0, Vector4 color1, Vector4 color2, bool addToDistribution, float baseValue = 1f, float noAttributeValue = 1f, AttributeCurveRange[] multipliers = null)
         {
             LibMaterial libMaterial = new LibMaterial(name, hash, LibMaterial.MaterialType.leather);
 
@@ -40,14 +44,10 @@ namespace CGNiksCustomLeatherVariants
             if (addToDistribution)
             {
                 Distribution leatherMaterialDistribution = Distribution.All.Where(dist => dist.Hash == 49220u).First();
-                IList items = (IList)leatherMaterialDistribution.GetType().GetField("items", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(leatherMaterialDistribution);
-                Distribution.Item item = new Distribution.Item();
-                typeof(Distribution.BaseItem).GetField("topic", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(item, libMaterial.physicalMaterial);
-                typeof(Distribution.BaseItem).GetField("baseValue", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(item, baseValue);
-                typeof(Distribution.BaseItem).GetField("noAttributeValue", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(item, noAttributeValue);
-                typeof(Distribution.BaseItem).GetField("multipliers", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(item, multipliers);
-                items.Add(item);
+                DifferentWyrmMaterials.Core.AddToDistribution(leatherMaterialDistribution, libMaterial.physicalMaterial, baseValue, noAttributeValue, multipliers);
             }
+
+            return libMaterial;
         }
 
         public static void SetupMaterial()
@@ -194,13 +194,13 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            AddLeather(
+            LibMaterial wyrmStomachLeather = AddLeather(
                 "Wyrm Stomach Leather",
                 37305,
                 new MaterialConfig() { WeightMultiplier = 1.2f, NailHealthMultiplier = 1.4f, MaxCraftingDamageMultiplier = 0.8f },
-                new Vector4(0.25f, 0.15f, 0.1f, 1f),
-                new Vector4(0.5f, 0.3f, 0.2f, 1f),
-                new Vector4(0.6f, 0.36f, 0.24f, 1f),
+                new Vector4(0.85f * 0.7f * 0.85f, 0.65f * 0.7f * 0.85f, 0.5f * 0.7f * 0.85f, 1f),
+                new Vector4(0.85f * 0.7f, 0.65f * 0.7f, 0.5f * 0.7f, 1f),
+                new Vector4(0.85f * 0.7f * 1.15f, 0.65f * 0.7f * 1.15f, 0.5f * 0.7f * 1.15f, 1f),
                 true,
                 0.5f,
                 0f,
@@ -219,13 +219,21 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            AddLeather(
+            DifferentWyrmMaterials.Core.AddToDistribution(
+                DifferentWyrmMaterials.Core.wyrmMaterialDistribution,
+                wyrmStomachLeather.physicalMaterial,
+                0.5f,
+                0.5f,
+                new AttributeCurveRange[] { }
+            );
+
+            LibMaterial wyrmBackLeather = AddLeather(
                 "Wyrm Back Leather",
                 37306,
-                new MaterialConfig() { WeightMultiplier = 0.7f, NailHealthMultiplier = 1.7f, MaxCraftingDamageMultiplier = 0.6f },
-                new Vector4(0.3f, 0.1f, 0.06f, 1f),
-                new Vector4(0.5f, 0.16f, 0.12f, 1f),
-                new Vector4(0.6f, 0.19f, 0.14f, 1f),
+                new MaterialConfig() { WeightMultiplier = 0.8f, NailHealthMultiplier = 1.6f, MaxCraftingDamageMultiplier = 0.6f },
+                new Vector4(0.4f, 0.2f, 0.16f, 1f),
+                new Vector4(0.5f, 0.25f, 0.2f, 1f),
+                new Vector4(0.6f, 0.3f, 0.24f, 1f),
                 true,
                 0.5f,
                 0f,
@@ -243,6 +251,122 @@ namespace CGNiksCustomLeatherVariants
                     )
                 }
             );
+
+            DifferentWyrmMaterials.Core.AddToDistribution(
+                DifferentWyrmMaterials.Core.wyrmMaterialDistribution,
+                wyrmBackLeather.physicalMaterial,
+                0.5f,
+                0.5f,
+                new AttributeCurveRange[] { }
+            );
+
+            LibMaterial crystalWyrmFaceLeather = AddLeather(
+                "Crystal Wyrm Face Leather",
+                37307,
+                new MaterialConfig() { WeightMultiplier = 0.6f, NailHealthMultiplier = 2f, MaxCraftingDamageMultiplier = 0.5f },
+                new Vector4(0.27f, 0.29f, 0.25f, 1f),
+                new Vector4(0.325f, 0.35f, 0.3f, 1f),
+                new Vector4(0.38f, 0.41f, 0.35f, 1f),
+                true,
+                1f,
+                0f,
+                new AttributeCurveRange[]
+                {
+                    new AttributeCurveRange(
+                        (BiomeAttribute)Resources.FindObjectsOfTypeAll(typeof(BiomeAttribute)).Where(attribute => attribute.name == "Wyrmness").First(),
+                        new AnimationCurve(new Keyframe[]
+                        {
+                            new Keyframe(0f, 0f),
+                            new Keyframe(1f, 1f)
+                        }),
+                        0f,
+                        1f
+                    )
+                }
+            );
+
+            DifferentWyrmMaterials.Core.AddToDistribution(
+                DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution,
+                crystalWyrmFaceLeather.physicalMaterial,
+                1f,
+                1f,
+                new AttributeCurveRange[] { }
+            );
+
+            LibMaterial crystalWyrmStomachLeather = AddLeather(
+                "Crystal Wyrm Stomach Leather",
+                37308,
+                new MaterialConfig() { WeightMultiplier = 1.3f, NailHealthMultiplier = 0.8f, MaxCraftingDamageMultiplier = 0.5f },
+                new Vector4(0.6f * 0.7f, 0.625f * 0.7f, 0.525f * 0.7f, 1f),
+                new Vector4(0.7f * 0.7f, 0.75f * 0.7f, 0.6f * 0.7f, 1f),
+                new Vector4(0.8f * 0.7f, 0.875f * 0.7f, 0.675f * 0.7f, 1f),
+                true,
+                0.5f,
+                0f,
+                new AttributeCurveRange[]
+                {
+                    new AttributeCurveRange(
+                        (BiomeAttribute)Resources.FindObjectsOfTypeAll(typeof(BiomeAttribute)).Where(attribute => attribute.name == "Wyrmness").First(),
+                        new AnimationCurve(new Keyframe[]
+                        {
+                            new Keyframe(0f, 0f),
+                            new Keyframe(1f, 1f)
+                        }),
+                        0f,
+                        1f
+                    )
+                }
+            );
+
+            DifferentWyrmMaterials.Core.AddToDistribution(
+                DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution,
+                crystalWyrmStomachLeather.physicalMaterial,
+                0.5f,
+                0.5f,
+                new AttributeCurveRange[] { }
+            );
+
+            LibMaterial crystalWyrmBackLeather = AddLeather(
+                "Crystal Wyrm Back Leather",
+                37309,
+                new MaterialConfig() { WeightMultiplier = 1.1f, NailHealthMultiplier = 1.3f, MaxCraftingDamageMultiplier = 0.9f },
+                new Vector4(0.14f, 0.165f, 0.12f, 1f),
+                new Vector4(0.19f, 0.22f, 0.16f, 1f),
+                new Vector4(0.24f, 0.275f, 0.2f, 1f),
+                true,
+                0.5f,
+                0f,
+                new AttributeCurveRange[]
+                {
+                    new AttributeCurveRange(
+                        (BiomeAttribute)Resources.FindObjectsOfTypeAll(typeof(BiomeAttribute)).Where(attribute => attribute.name == "Wyrmness").First(),
+                        new AnimationCurve(new Keyframe[]
+                        {
+                            new Keyframe(0f, 0f),
+                            new Keyframe(1f, 1f)
+                        }),
+                        0f,
+                        1f
+                    )
+                }
+            );
+
+            DifferentWyrmMaterials.Core.AddToDistribution(
+                DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution,
+                crystalWyrmBackLeather.physicalMaterial,
+                0.5f,
+                0.5f,
+                new AttributeCurveRange[] { }
+            );
+
+            List<Distribution.Item> items = (List<Distribution.Item>)DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution.GetType().GetField("items", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution);
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                if (items[i].Topic == PhysicalMaterial.All.Where(mat => mat.Hash == 63538u).First())
+                {
+                    items.RemoveAt(i);
+                }
+            }
 
             /* this is an example for how you would do the material setting for a material that uses a different Non Forging Material, just because I already made it and don't want to make it again when I end up using it
             Material mainMat2 = UnityEngine.Object.Instantiate(charcoalLeather.physicalMaterial.GetMaterial(PhysicalMaterialChannel.A));
