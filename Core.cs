@@ -8,7 +8,7 @@ using MelonLoader;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
-using static AltaMenuItemBase.Assets.Create.Township.Features;
+using CustomDistributionAPI;
 
 [assembly: MelonInfo(typeof(CGNiksCustomLeatherVariants.Core), "CGNiksCustomLeatherVariants", "1.0.0", "CGNik", null)]
 [assembly: MelonGame("Alta", "A Township Tale")]
@@ -44,7 +44,7 @@ namespace CGNiksCustomLeatherVariants
             if (addToDistribution)
             {
                 Distribution leatherMaterialDistribution = Distribution.All.Where(dist => dist.Hash == 49220u).First();
-                DifferentWyrmMaterials.Core.AddToDistribution(leatherMaterialDistribution, libMaterial.physicalMaterial, baseValue, noAttributeValue, multipliers);
+                CustomDistributionAPI.Core.AddToDistribution(leatherMaterialDistribution, libMaterial.physicalMaterial, baseValue, noAttributeValue, multipliers);
             }
 
             return libMaterial;
@@ -219,14 +219,14 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            DifferentWyrmMaterials.Core.AddToDistribution(
+            CustomDistributionAPI.Core.AddToDistribution(
                 DifferentWyrmMaterials.Core.wyrmMaterialDistribution,
                 wyrmStomachLeather.physicalMaterial,
                 0.5f,
                 0.5f,
                 new AttributeCurveRange[] { }
             );
-
+            
             LibMaterial wyrmBackLeather = AddLeather(
                 "Wyrm Back Leather",
                 37306,
@@ -252,14 +252,14 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            DifferentWyrmMaterials.Core.AddToDistribution(
+            CustomDistributionAPI.Core.AddToDistribution(
                 DifferentWyrmMaterials.Core.wyrmMaterialDistribution,
                 wyrmBackLeather.physicalMaterial,
                 0.5f,
                 0.5f,
                 new AttributeCurveRange[] { }
             );
-
+            
             LibMaterial crystalWyrmFaceLeather = AddLeather(
                 "Crystal Wyrm Face Leather",
                 37307,
@@ -285,7 +285,7 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            DifferentWyrmMaterials.Core.AddToDistribution(
+            CustomDistributionAPI.Core.AddToDistribution(
                 DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution,
                 crystalWyrmFaceLeather.physicalMaterial,
                 1f,
@@ -318,7 +318,7 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            DifferentWyrmMaterials.Core.AddToDistribution(
+            CustomDistributionAPI.Core.AddToDistribution(
                 DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution,
                 crystalWyrmStomachLeather.physicalMaterial,
                 0.5f,
@@ -351,7 +351,7 @@ namespace CGNiksCustomLeatherVariants
                 }
             );
 
-            DifferentWyrmMaterials.Core.AddToDistribution(
+            CustomDistributionAPI.Core.AddToDistribution(
                 DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution,
                 crystalWyrmBackLeather.physicalMaterial,
                 0.5f,
@@ -360,13 +360,19 @@ namespace CGNiksCustomLeatherVariants
             );
 
             List<Distribution.Item> items = (List<Distribution.Item>)DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution.GetType().GetField("items", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution);
+
             for (int i = items.Count - 1; i >= 0; i--)
             {
+                
                 if (items[i].Topic == PhysicalMaterial.All.Where(mat => mat.Hash == 63538u).First())
                 {
+                    
                     items.RemoveAt(i);
+                    
                 }
+                
             }
+            
 
             /* this is an example for how you would do the material setting for a material that uses a different Non Forging Material, just because I already made it and don't want to make it again when I end up using it
             Material mainMat2 = UnityEngine.Object.Instantiate(charcoalLeather.physicalMaterial.GetMaterial(PhysicalMaterialChannel.A));
