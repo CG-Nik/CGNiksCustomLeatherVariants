@@ -359,6 +359,41 @@ namespace CGNiksCustomLeatherVariants
                 new AttributeCurveRange[] { }
             );
 
+            AddLeather(
+                "White Leather",
+                37310,
+                new MaterialConfig() { NailHealthMultiplier = 0.8f, MaxCraftingDamageMultiplier = 0.8f },
+                new Vector4(0.7f, 0.7f, 0.7f, 1f),
+                new Vector4(0.8f, 0.8f, 0.8f, 1f),
+                new Vector4(0.9f, 0.9f, 0.9f, 1f),
+                true,
+                0.35f,
+                0.35f,
+                new AttributeCurveRange[]
+                {
+                    new AttributeCurveRange(
+                        (BiomeAttribute)Resources.FindObjectsOfTypeAll(typeof(BiomeAttribute)).Where(attribute => attribute.name == "Wyrmness").First(),
+                        new AnimationCurve(new Keyframe[]
+                        {
+                            new Keyframe(0f, 0f),
+                            new Keyframe(1f, 1f)
+                        }),
+                        1f,
+                        0f
+                    ),
+                    new AttributeCurveRange(
+                        (BiomeAttribute)Resources.FindObjectsOfTypeAll(typeof(BiomeAttribute)).Where(attribute => attribute.name == "_Depth").First(),
+                        new AnimationCurve(new Keyframe[]
+                        {
+                            new Keyframe(0f, 1f),
+                            new Keyframe(1f, 0f)
+                        }),
+                        0f,
+                        50f
+                    )
+                }
+            );
+
             List<Distribution.Item> items = (List<Distribution.Item>)DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution.GetType().GetField("items", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(DifferentWyrmMaterials.Core.crystalWyrmMaterialDistribution);
 
             for (int i = items.Count - 1; i >= 0; i--)
@@ -372,7 +407,6 @@ namespace CGNiksCustomLeatherVariants
                 }
                 
             }
-            
 
             /* this is an example for how you would do the material setting for a material that uses a different Non Forging Material, just because I already made it and don't want to make it again when I end up using it
             Material mainMat2 = UnityEngine.Object.Instantiate(charcoalLeather.physicalMaterial.GetMaterial(PhysicalMaterialChannel.A));
