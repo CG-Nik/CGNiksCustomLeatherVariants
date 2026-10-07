@@ -1,4 +1,5 @@
 # CGNiksCustomLeatherVariants
+**THIS MOD HAS BEEN DISCONTINUED**  
 This mod adds several leather types, some of which can be found as loot, and some of which can be found from Wyrms.  
 This mod needs to be on both the Client and Server.  
 Requires https://github.com/Circl-NoE/ATTMateriaLib, https://github.com/CG-Nik/DifferentWyrmMaterials, and https://github.com/CG-Nik/CustomDistributionAPI; all on the Server and Client.  
